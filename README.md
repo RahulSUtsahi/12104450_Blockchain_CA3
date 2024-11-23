@@ -1,3 +1,83 @@
+This Solidity code implements a contract that facilitates controlled fund withdrawal using a role-based access control mechanism provided by the OpenZeppelin library. Here's a breakdown:
+
+### Key Features and Functions
+
+1. **License Identifier and Compiler Version**:
+   - `// SPDX-License-Identifier: MIT`: Indicates the contract's license, allowing reuse under the MIT license.
+   - `pragma solidity ^0.8.28`: Specifies the Solidity compiler version.
+
+2. **Inheritance from OpenZeppelin's `AccessControl`**:
+   - The contract inherits from `AccessControl`, enabling role-based access control.
+
+3. **Custom Errors**:
+   - `isNotTheOwner`: Custom error thrown when a caller is unauthorized.
+   - `balanceTooLow`: Custom error thrown when a withdrawal amount exceeds the contract's balance.
+
+4. **Constructor**:
+   ```solidity
+   constructor(address _owner) payable {
+       _grantRole(DEFAULT_ADMIN_ROLE, _owner);
+   }
+   ```
+   - Accepts `_owner` as an argument, the address assigned the `DEFAULT_ADMIN_ROLE`.
+   - This role gives `_owner` full access to privileged operations.
+   - The `payable` modifier allows the contract to receive Ether during deployment.
+
+5. **Withdraw Function**:
+   ```solidity
+   function withdraw(address payable to, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
+       uint256 balance = address(this).balance;
+       if (balance < amount) revert balanceTooLow(balance, amount);
+       to.transfer(amount);
+   }
+   ```
+   - Allows a user with the `DEFAULT_ADMIN_ROLE` to withdraw Ether.
+   - Checks the contract's balance and reverts if insufficient.
+   - Transfers the specified amount to the provided payable address `to`.
+
+6. **Receive Ether Function**:
+   ```solidity
+   receive() external payable {}
+   ```
+   - Enables the contract to accept Ether via plain transfers (e.g., `address.send` or `address.transfer`).
+
+---
+
+### Key Concepts
+
+- **Access Control**:
+  - Role-based access is enforced using OpenZeppelin's `AccessControl`.
+  - `onlyRole(DEFAULT_ADMIN_ROLE)` ensures only authorized users can invoke `withdraw`.
+
+- **Error Handling**:
+  - Custom errors (`balanceTooLow`, `isNotTheOwner`) save gas compared to `require` by avoiding string storage for error messages.
+
+- **Ether Management**:
+  - Ether is stored in the contract and can be securely withdrawn by the admin.
+
+---
+
+### Example Use
+
+1. **Deployment**:
+   Deploy the contract, specifying the admin's address and optionally sending Ether.
+
+   ```solidity
+   CA3 newContract = new CA3(adminAddress);
+   ```
+
+2. **Ether Deposit**:
+   Send Ether directly to the contract using the `receive` function.
+
+3. **Ether Withdrawal**:
+   The admin can withdraw funds using the `withdraw` function:
+
+   ```solidity
+   contract.withdraw(payable(receiverAddress), amount);
+   ```
+
+This contract is a secure, minimal example of a fund management system where only the designated admin can withdraw funds.
+
 The translation of the K Framework logic to correspond with the Solidity code provided for the `CA3` contract is as follows:
 
 ```k
