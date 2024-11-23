@@ -18,6 +18,7 @@ contract CA3 is AccessControl{
         to.transfer(amount);
     }
 
+//   Secure Code
 //   function withdraw(address payable to, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE){
 //       uint256 balance = address(this).balance;
 //       if (balance < amount) revert balanceTooLow(balance, amount);
