@@ -2,18 +2,14 @@ This Solidity code implements a contract that facilitates controlled fund withdr
 
 ### Key Features and Functions
 
-1. **License Identifier and Compiler Version**:
-   - `// SPDX-License-Identifier: MIT`: Indicates the contract's license, allowing reuse under the MIT license.
-   - `pragma solidity ^0.8.28`: Specifies the Solidity compiler version.
-
-2. **Inheritance from OpenZeppelin's `AccessControl`**:
+1. **Inheritance from OpenZeppelin's `AccessControl`**:
    - The contract inherits from `AccessControl`, enabling role-based access control.
 
-3. **Custom Errors**:
+2. **Custom Errors**:
    - `isNotTheOwner`: Custom error thrown when a caller is unauthorized.
    - `balanceTooLow`: Custom error thrown when a withdrawal amount exceeds the contract's balance.
 
-4. **Constructor**:
+3. **Constructor**:
    ```solidity
    constructor(address _owner) payable {
        _grantRole(DEFAULT_ADMIN_ROLE, _owner);
@@ -23,7 +19,7 @@ This Solidity code implements a contract that facilitates controlled fund withdr
    - This role gives `_owner` full access to privileged operations.
    - The `payable` modifier allows the contract to receive Ether during deployment.
 
-5. **Withdraw Function**:
+4. **Withdraw Function**:
    ```solidity
    function withdraw(address payable to, uint256 amount) external onlyRole(DEFAULT_ADMIN_ROLE) {
        uint256 balance = address(this).balance;
@@ -35,7 +31,7 @@ This Solidity code implements a contract that facilitates controlled fund withdr
    - Checks the contract's balance and reverts if insufficient.
    - Transfers the specified amount to the provided payable address `to`.
 
-6. **Receive Ether Function**:
+5. **Receive Ether Function**:
    ```solidity
    receive() external payable {}
    ```
